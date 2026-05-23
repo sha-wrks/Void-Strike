@@ -1,0 +1,74 @@
+:root {
+    --bg: #0a0e27;
+    --cyan: #00D9FF;
+    --magenta: #FF006E;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+}
+
+.game-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(ellipse at center, #0d1233 0%, var(--bg) 100%);
+    outline: none;
+}
+
+.game-canvas {
+    display: block;
+    max-width: min(100vw, calc(100vh * 4 / 3));
+    max-height: min(100vh, calc(100vw * 3 / 4));
+    width: auto;
+    height: auto;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    box-shadow: 0 0 40px rgba(0, 217, 255, 0.25), inset 0 0 80px rgba(0, 0, 0, 0.5);
+}
+
+/* Loading screen override */
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+.loading-progress {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading-progress circle {
+    fill: none;
+    stroke: var(--cyan);
+    stroke-width: 0.06rem;
+    animation: loading-progress-spin 1.5s linear infinite, loading-progress-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes loading-progress-spin {
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes loading-progress-pulse {
+    0% { stroke-dasharray: 0.01px 10px; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 4.9px 10px; stroke-dashoffset: -2.25px; }
+    100% { stroke-dasharray: 9.99px 10px; stroke-dashoffset: -9.25px; }
+}
+
+.loading-progress-text::after {
+    content: attr(data-value);
+    color: var(--cyan);
+    font-family: 'Courier New', monospace;
+    display: block;
+    text-align: center;
+    padding-top: 2rem;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Void Strike</title>
+    <base href="/" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+    <div id="app">
+        <svg class="loading-progress" viewBox="0 0 100 100" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui" style="display:none;position:fixed;bottom:0;width:100%;background:#1a0010;color:#FF006E;padding:8px;font-family:monospace;text-align:center;">
+        An unhandled error has occurred. <a href="." style="color:#00D9FF;">Reload</a>
+        <span onclick="this.parentElement.style.display='none'" style="cursor:pointer;float:right;padding:0 8px;">✕</span>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/canvas.js"></script>
+</body>
+</html>

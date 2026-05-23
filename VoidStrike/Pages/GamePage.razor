@@ -1,0 +1,47 @@
+@page "/"
+@using VoidStrike.Services
+@using VoidStrike.Models
+@using System.Diagnostics
+@inject GameEngine GameEngine
+@inject InputManager InputManager
+@inject IJSRuntime JS
+
+<div class="game-wrapper" @onkeydown="OnKeyDown" @onkeyup="OnKeyUp" tabindex="0" @ref="_containerRef">
+    <canvas @ref="_canvasRef" width="1024" height="768" class="game-canvas"></canvas>
+</div>
+
+@code {
+    private ElementReference _canvasRef;
+    private ElementReference _containerRef;
+    private GameState _state = GameState.CreateInitial();
+    private bool _running;
+    private long _lastTick;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await JS.InvokeVoidAsync("vsGame.init", _canvasRef);
+        await JS.InvokeVoidAsync("vsGame.focusContainer", _containerRef);
+        _running = true;
+        _lastTick = Stopwatch.GetTimestamp();
+        _ = GameLoop();
+    }
+
+    private async Task GameLoop()
+    {
+        while (_running)
+        {
+            var now = Stopwatch.GetTimestamp();
+            var dt = (float)(now - _lastTick) / Stopwatch.Frequency;
+            _lastTick = now;
+
+            _state = GameEngine.Update(_state, dt);
+            await JS.InvokeVoidAsync("vsGame.render", _state);
+
+            await Task.Delay(1);
+        }
+    }
+
+    private void OnKeyDown(KeyboardEventArgs e) => InputManager.OnKeyDown(e.Key == " " ? " " : e.Key);
+    private void OnKeyUp(KeyboardEventArgs e) => InputManager.OnKeyUp(e.Key == " " ? " " : e.Key);
+}
