@@ -1,0 +1,52 @@
+name: Deploy Void Strike to GitHub Pages
+
+on:
+  push:
+    branches: [void-strike]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore VoidStrike/VoidStrike.csproj
+
+      - name: Publish
+        run: dotnet publish VoidStrike/VoidStrike.csproj -c Release -o publish
+
+      - name: Fix base href for GitHub Pages
+        run: |
+          sed -i 's|<base href="/" />|<base href="/Void-Strike/" />|g' publish/wwwroot/index.html
+
+      - name: Add .nojekyll
+        run: touch publish/wwwroot/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: publish/wwwroot
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
